@@ -1,6 +1,6 @@
 <?php
 
-namespace NAttreid\SmartEmailing;
+namespace NAttreid\SmartEmailing\DI;
 
 use Nette\DI\CompilerExtension;
 use Nette\InvalidStateException;

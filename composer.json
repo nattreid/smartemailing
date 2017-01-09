@@ -1,0 +1,33 @@
+{
+  "name": "nattreid/smartemailing",
+  "description": "SmartEmailing for Nette Framework",
+  "type": "library",
+  "license": [
+    "Unlicense"
+  ],
+  "authors": [
+    {
+      "name": "Attreid",
+      "email": "attreid@gmail.com"
+    }
+  ],
+  "repositories": [
+    {
+      "type": "composer",
+      "url": "https://packages.newtravel.cz"
+    }
+  ],
+  "require": {
+    "php": ">= 5.6",
+    "nette/di": "~2.4",
+    "guzzlehttp/guzzle": "~6.2"
+  },
+  "require-dev": {
+    "nette/tester": "~1.7"
+  },
+  "autoload": {
+    "classmap": [
+      "src/"
+    ]
+  }
+}

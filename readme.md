@@ -13,7 +13,7 @@ smartEmailing:
 Použití
 
 ```php
-/** @var NAtrreid\SmartEmailing\Client @inject */
+/** @var NAttreid\SmartEmailing\Client @inject */
 public $smartEmailing;
 
 ```

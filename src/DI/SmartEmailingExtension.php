@@ -2,6 +2,7 @@
 
 namespace NAttreid\SmartEmailing\DI;
 
+use NAttreid\SmartEmailing\Client;
 use Nette\DI\CompilerExtension;
 use Nette\InvalidStateException;
 

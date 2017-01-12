@@ -99,13 +99,13 @@ class Client
 		} catch (ClientException $ex) {
 			switch ($ex->getCode()) {
 				case 404:
+				case 422:
 					if ($this->debug) {
 						throw $ex;
 					} else {
 						return false;
 					}
 				case 401:
-				case 422:
 					throw $ex;
 			}
 		}

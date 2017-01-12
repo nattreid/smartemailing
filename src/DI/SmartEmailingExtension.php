@@ -15,7 +15,8 @@ class SmartEmailingExtension extends CompilerExtension
 {
 	private $defaults = [
 		'username' => null,
-		'key' => null
+		'key' => null,
+		'debug' => false
 	];
 
 	public function loadConfiguration()
@@ -32,6 +33,6 @@ class SmartEmailingExtension extends CompilerExtension
 
 		$builder->addDefinition($this->prefix('client'))
 			->setClass(Client::class)
-			->setArguments([$config['username'], $config['key']]);
+			->setArguments([$config['debug'], $config['username'], $config['key']]);
 	}
 }

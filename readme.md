@@ -8,6 +8,7 @@ extensions:
 smartEmailing:
     username: 'username@mail.com'
     key: 'apiKey'
+    debug: true # default false
 ```
 
 Použití

@@ -75,6 +75,10 @@ class Client
 	 */
 	private function request($method, $url, array $args = [])
 	{
+		if (empty($this->username) || empty($this->password)) {
+			return false;
+		}
+
 		try {
 			$options = [
 				RequestOptions::AUTH => [

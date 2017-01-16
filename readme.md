@@ -14,7 +14,7 @@ smartEmailing:
 Použití
 
 ```php
-/** @var NAttreid\SmartEmailing\Client @inject */
+/** @var NAttreid\SmartEmailing\SmartEmailingClient @inject */
 public $smartEmailing;
 
 ```

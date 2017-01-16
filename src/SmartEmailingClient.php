@@ -102,6 +102,9 @@ class SmartEmailingClient
 			}
 		} catch (ClientException $ex) {
 			switch ($ex->getCode()) {
+				default:
+					throw $ex;
+					break;
 				case 404:
 				case 422:
 					if ($this->debug) {
@@ -109,8 +112,6 @@ class SmartEmailingClient
 					} else {
 						return false;
 					}
-				case 401:
-					throw $ex;
 			}
 		}
 		return false;

@@ -21,7 +21,7 @@ class SmartEmailingClient
 	private $client;
 
 	/** @var string */
-	private $uri;
+	private $uri = 'https://app.smartemailing.cz/api/v3/';
 
 	/** @var string */
 	private $username;
@@ -40,7 +40,6 @@ class SmartEmailingClient
 	 */
 	public function __construct($debug, $username, $password)
 	{
-		$this->uri = 'https://app.smartemailing.cz/api/v3/';
 		$this->username = $username;
 		$this->password = $password;
 		$this->debug = (bool)$debug;
@@ -62,7 +61,7 @@ class SmartEmailingClient
 	private function getClient()
 	{
 		if ($this->client === null) {
-			$this->client = new Client(['base_uri' => 'https://app.smartemailing.cz/api/v3/']);
+			$this->client = new Client(['base_uri' => $this->uri]);
 		}
 		return $this->client;
 	}

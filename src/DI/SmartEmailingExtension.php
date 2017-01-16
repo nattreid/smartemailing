@@ -15,7 +15,8 @@ class SmartEmailingExtension extends CompilerExtension
 {
 	private $defaults = [
 		'username' => null,
-		'key' => null,
+		'apiKey' => null,
+		'listId' => null,
 		'debug' => false
 	];
 
@@ -27,12 +28,16 @@ class SmartEmailingExtension extends CompilerExtension
 		if ($config['username'] === null) {
 			throw new InvalidStateException("SmartEmailing: 'username' does not set in config.neon");
 		}
-		if ($config['key'] === null) {
-			throw new InvalidStateException("SmartEmailing: 'key' does not set in config.neon");
+		if ($config['apiKey'] === null) {
+			throw new InvalidStateException("SmartEmailing: 'apiKey' does not set in config.neon");
 		}
 
-		$builder->addDefinition($this->prefix('client'))
+		$client = $builder->addDefinition($this->prefix('client'))
 			->setClass(SmartEmailingClient::class)
-			->setArguments([$config['debug'], $config['username'], $config['key']]);
+			->setArguments([$config['debug'], $config['username'], $config['apiKey']]);
+
+		if ($config ['listId'] !== null) {
+			$client->addSetup('setListId', [$config['listId']]);
+		}
 	}
 }

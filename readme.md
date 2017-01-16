@@ -7,7 +7,8 @@ extensions:
 
 smartEmailing:
     username: 'username@mail.com'
-    key: 'apiKey'
+    apiKey: 'apiKey'
+    listId: 3 # vychozi seznam pro ukladani kontaktu
     debug: true # default false
 ```
 

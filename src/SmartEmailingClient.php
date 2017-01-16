@@ -2,7 +2,7 @@
 
 namespace NAttreid\SmartEmailing;
 
-use GuzzleHttp\Client as GClient;
+use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\RequestOptions;
 use Nette\Utils\Json;
@@ -15,9 +15,9 @@ use stdClass;
  *
  * @author Attreid <attreid@gmail.com>
  */
-class Client
+class SmartEmailingClient
 {
-	/** @var GClient */
+	/** @var Client */
 	private $client;
 
 	/** @var string */
@@ -62,7 +62,7 @@ class Client
 	private function getClient()
 	{
 		if ($this->client === null) {
-			$this->client = new GClient(['base_uri' => 'https://app.smartemailing.cz/api/v3/']);
+			$this->client = new Client(['base_uri' => 'https://app.smartemailing.cz/api/v3/']);
 		}
 		return $this->client;
 	}
@@ -70,13 +70,14 @@ class Client
 	/**
 	 * @param string $method
 	 * @param string $url
-	 * @param $args
+	 * @param array $args
 	 * @return bool|stdClass
+	 * @throws CredentialsNotSetException
 	 */
 	private function request($method, $url, array $args = [])
 	{
 		if (empty($this->username) || empty($this->password)) {
-			return false;
+			throw new CredentialsNotSetException('Username and password must be set');
 		}
 
 		try {
@@ -113,6 +114,7 @@ class Client
 					throw $ex;
 			}
 		}
+		return false;
 	}
 
 	/**

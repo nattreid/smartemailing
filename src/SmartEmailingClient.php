@@ -5,6 +5,8 @@ namespace NAttreid\SmartEmailing;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\RequestOptions;
+use InvalidArgumentException;
+use NAttreid\SmartEmailing\Helper\Contact;
 use Nette\Utils\Json;
 use Nette\Utils\Strings;
 use Psr\Http\Message\ResponseInterface;
@@ -562,28 +564,18 @@ class SmartEmailingClient
 
 	/**
 	 * Add contact
-	 * @param string $email
-	 * @param string $name
-	 * @param string $street
-	 * @param string $town
-	 * @param string $postalcode
-	 * @param string $country
-	 * @param string $phone
+	 * @param Contact $contact
 	 * @param int $contactListId
 	 * @return bool|stdClass
 	 */
-	public function addContact($email, $name, $street, $town, $postalcode, $country, $phone, $contactListId = null)
+	public function addContact(Contact $contact, $contactListId = null)
 	{
-		$data = [
-			'emailaddress' => $email,
-			'name' => $name,
-			'street' => $street,
-			'town' => $town,
-			'postalcode' => $postalcode,
-			'country' => $country,
-			'phone' => $phone,
-			'blacklisted' => 0
-		];
+		if ($contact->emailaddress === null) {
+			throw new InvalidArgumentException("'emailaddress' must be set.");
+		}
+		$data = get_object_vars($contact);
+
+		$data['blacklisted'] = 0;
 
 		if ($contactListId !== null) {
 			$data['contactlists'] = [

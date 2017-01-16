@@ -2,7 +2,7 @@
 
 namespace NAttreid\SmartEmailing\DI;
 
-use NAttreid\SmartEmailing\Client;
+use NAttreid\SmartEmailing\SmartEmailingClient;
 use Nette\DI\CompilerExtension;
 use Nette\InvalidStateException;
 
@@ -32,7 +32,7 @@ class SmartEmailingExtension extends CompilerExtension
 		}
 
 		$builder->addDefinition($this->prefix('client'))
-			->setClass(Client::class)
+			->setClass(SmartEmailingClient::class)
 			->setArguments([$config['debug'], $config['username'], $config['key']]);
 	}
 }

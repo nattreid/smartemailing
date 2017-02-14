@@ -1,0 +1,7 @@
+web:
+    hooks:
+        smartEmailing:
+            title: "SmartEmailing"
+            username: "Username"
+            apiKey: "API key"
+            list: "List"

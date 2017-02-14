@@ -1,0 +1,7 @@
+web:
+    hooks:
+        smartEmailing:
+            title: "SmartEmailing"
+            username: "Uživatelské jméno"
+            apiKey: "API klíč"
+            list: "Seznam"

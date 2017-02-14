@@ -1,0 +1,74 @@
+<?php
+
+namespace NAttreid\SmartEmailing\Hooks;
+
+use GuzzleHttp\Exception\ClientException;
+use IPub\FlashMessages\FlashNotifier;
+use NAttreid\Cms\Configurator\Configurator;
+use NAttreid\Cms\Factories\FormFactory;
+use NAttreid\Form\Form;
+use NAttreid\SmartEmailing\CredentialsNotSetException;
+use NAttreid\SmartEmailing\SmartEmailingClient;
+use NAttreid\WebManager\Services\Hooks\HookFactory;
+use Nette\InvalidArgumentException;
+
+/**
+ * Class GoogleAnalyticsHook
+ *
+ * @author Attreid <attreid@gmail.com>
+ */
+class SmartEmailingHook extends HookFactory
+{
+	/** @var IConfigurator */
+	protected $configurator;
+
+	/** @var SmartEmailingClient */
+	private $smartEmailingClient;
+
+	public function __construct(FormFactory $formFactory, Configurator $configurator, FlashNotifier $flashNotifier, SmartEmailingClient $smartEmailingClient)
+	{
+		parent::__construct($formFactory, $configurator, $flashNotifier);
+		$this->smartEmailingClient = $smartEmailingClient;
+	}
+
+	/** @return Form */
+	public function create()
+	{
+		$form = $this->formFactory->create();
+
+		$form->addText('username', 'webManager.web.hooks.smartEmailing.username')
+			->setDefaultValue($this->configurator->smartemailingUsername);
+		$form->addText('apiKey', 'webManager.web.hooks.smartEmailing.apiKey')
+			->setDefaultValue($this->configurator->smartemailingApiKey);
+
+		try {
+			$data = $this->smartEmailingClient->findContactsLists()->data;
+			$items = [];
+			foreach ($data as $row) {
+				$items[$row->id] = $row->name;
+			}
+			$select = $form->addSelectUntranslated('list', 'webManager.web.hooks.smartEmailing.list', $items, 'form.none');
+
+			$select->setDefaultValue($this->configurator->smartemailingListId);
+
+		} catch (ClientException $ex) {
+		} catch (CredentialsNotSetException $ex) {
+		} catch (InvalidArgumentException $ex) {
+		}
+
+		$form->addSubmit('save', 'form.save');
+
+		$form->onSuccess[] = [$this, 'smartemailingFormSucceeded'];
+
+		return $form;
+	}
+
+	public function smartemailingFormSucceeded(Form $form, $values)
+	{
+		$this->configurator->smartemailingUsername = $values->username;
+		$this->configurator->smartemailingApiKey = $values->apiKey;
+		$this->configurator->smartemailingListId = $values->list;
+
+		$this->flashNotifier->success('default.dataSaved');
+	}
+}

@@ -13,7 +13,7 @@ use NAttreid\WebManager\Services\Hooks\HookFactory;
 use Nette\InvalidArgumentException;
 
 /**
- * Class GoogleAnalyticsHook
+ * Class SmartEmailingHook
  *
  * @author Attreid <attreid@gmail.com>
  */

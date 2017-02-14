@@ -403,6 +403,7 @@ class SmartEmailingClient
 
 	/**
 	 * Get single Contact
+	 * @param int $id
 	 * @param string[] $select Allowed values: "id", "language", "blacklisted", "emailaddress", "name", "surname", "titlesbefore", "titlesafter", "birthday", "nameday", "salution", "gender", "company", "street", "town", "country", "postalcode", "notes", "phone", "cellphone", "realname"
 	 * @return bool|stdClass
 	 * @throws CredentialsNotSetException
@@ -657,7 +658,6 @@ class SmartEmailingClient
 	/**
 	 * Add contact
 	 * @param Contact $contact
-	 * @param int $contactListId
 	 * @return bool|stdClass
 	 * @throws CredentialsNotSetException
 	 * @throws ConnectException

@@ -41,7 +41,7 @@ class SmartEmailingExtension extends CompilerExtension
 			->setClass(SmartEmailingClient::class)
 			->setArguments([$config['debug'], $config['username'], $config['apiKey']]);
 
-		if ($config ['listId'] !== null) {
+		if ($config['listId'] !== null) {
 			$client->addSetup('setListId', [$config['listId']]);
 		}
 
@@ -58,6 +58,4 @@ class SmartEmailingExtension extends CompilerExtension
 			]);
 		}
 	}
-
-
 }

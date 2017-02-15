@@ -2,11 +2,13 @@
 
 namespace NAttreid\SmartEmailing\DI;
 
+use NAttreid\Cms\Configurator\Configurator;
 use NAttreid\Cms\ExtensionTranslatorTrait;
 use NAttreid\SmartEmailing\Hooks\SmartEmailingHook;
 use NAttreid\SmartEmailing\SmartEmailingClient;
 use NAttreid\WebManager\Services\Hooks\HookService;
 use Nette\DI\CompilerExtension;
+use Nette\DI\Statement;
 use Nette\InvalidStateException;
 
 /**
@@ -30,6 +32,23 @@ class SmartEmailingExtension extends CompilerExtension
 		$builder = $this->getContainerBuilder();
 		$config = $this->validateConfig($this->defaults, $this->getConfig());
 
+		$hook = $builder->getByType(HookService::class);
+		if ($hook) {
+			$seHook = $builder->addDefinition($this->prefix('smartEmailingHook'))
+				->setClass(SmartEmailingHook::class);
+
+			$builder->getDefinition($hook)
+				->addSetup('addHook', [$seHook]);
+
+			$this->setTranslation(__DIR__ . '/../lang/', [
+				'webManager'
+			]);
+
+			$config['username'] = new Statement('?->smartemailingUsername', ['@' . Configurator::class]);
+			$config['apiKey'] = new Statement('?->smartemailingApiKey', ['@' . Configurator::class]);
+			$config['listId'] = new Statement('?->smartemailingListId', ['@' . Configurator::class]);
+		}
+
 		if ($config['username'] === null) {
 			throw new InvalidStateException("SmartEmailing: 'username' does not set in config.neon");
 		}
@@ -43,19 +62,6 @@ class SmartEmailingExtension extends CompilerExtension
 
 		if ($config['listId'] !== null) {
 			$client->addSetup('setListId', [$config['listId']]);
-		}
-
-		$hook = $builder->getByType(HookService::class);
-		if ($hook) {
-			$seHook = $builder->addDefinition($this->prefix('smartEmailingHook'))
-				->setClass(SmartEmailingHook::class);
-
-			$builder->getDefinition($hook)
-				->addSetup('addHook', [$seHook]);
-
-			$this->setTranslation(__DIR__ . '/../lang/', [
-				'webManager'
-			]);
 		}
 	}
 }

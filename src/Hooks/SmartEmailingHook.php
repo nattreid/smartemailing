@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace NAttreid\SmartEmailing\Hooks;
 
 use GuzzleHttp\Exception\ClientException;
@@ -11,6 +13,7 @@ use NAttreid\SmartEmailing\CredentialsNotSetException;
 use NAttreid\SmartEmailing\SmartEmailingClient;
 use NAttreid\WebManager\Services\Hooks\HookFactory;
 use Nette\InvalidArgumentException;
+use Nette\Utils\ArrayHash;
 
 /**
  * Class SmartEmailingHook
@@ -32,7 +35,7 @@ class SmartEmailingHook extends HookFactory
 	}
 
 	/** @return Form */
-	public function create()
+	public function create(): Form
 	{
 		$form = $this->formFactory->create();
 
@@ -63,7 +66,7 @@ class SmartEmailingHook extends HookFactory
 		return $form;
 	}
 
-	public function smartemailingFormSucceeded(Form $form, $values)
+	public function smartemailingFormSucceeded(Form $form, ArrayHash $values)
 	{
 		$this->configurator->smartemailingUsername = $values->username;
 		$this->configurator->smartemailingApiKey = $values->apiKey;

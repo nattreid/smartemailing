@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace NAttreid\SmartEmailing\DI;
 
 use NAttreid\Cms\Configurator\Configurator;

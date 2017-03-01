@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace NAttreid\SmartEmailing;
 
 use GuzzleHttp\Client;
@@ -47,18 +49,18 @@ class SmartEmailingClient
 	 * @param string $username
 	 * @param string $apiKey
 	 */
-	public function __construct($debug, $username, $apiKey)
+	public function __construct(bool $debug, string $username, string $apiKey)
 	{
 		$this->username = $username;
 		$this->apiKey = $apiKey;
-		$this->debug = (bool)$debug;
+		$this->debug = $debug;
 	}
 
 	/**
 	 * Set default ContactList for Contact
 	 * @param int|null $id
 	 */
-	public function setListId($id = null)
+	public function setListId(int $id = null)
 	{
 		$this->listId = is_int($id) ? $id : null;
 	}
@@ -76,7 +78,7 @@ class SmartEmailingClient
 		return null;
 	}
 
-	private function getClient()
+	private function getClient(): Client
 	{
 		if ($this->client === null) {
 			$this->client = new Client(['base_uri' => $this->uri]);
@@ -93,7 +95,7 @@ class SmartEmailingClient
 	 * @throws ConnectException
 	 * @throws ClientException
 	 */
-	private function request($method, $url, array $args = [])
+	private function request(string $method, string $url, array $args = [])
 	{
 		if (empty($this->username) || empty($this->apiKey)) {
 			throw new CredentialsNotSetException('Username and apiKey must be set');
@@ -144,7 +146,7 @@ class SmartEmailingClient
 	 * @throws ConnectException
 	 * @throws ClientException
 	 */
-	private function get($url)
+	private function get(string $url)
 	{
 		return $this->request('GET', $url);
 	}
@@ -157,7 +159,7 @@ class SmartEmailingClient
 	 * @throws ConnectException
 	 * @throws ClientException
 	 */
-	private function post($url, array $args = [])
+	private function post(string $url, array $args = [])
 	{
 		return $this->request('POST', $url, $args);
 	}
@@ -169,7 +171,7 @@ class SmartEmailingClient
 	 * @throws ConnectException
 	 * @throws ClientException
 	 */
-	private function delete($url)
+	private function delete(string $url): bool
 	{
 		return $this->request('DELETE', $url);
 	}
@@ -182,7 +184,7 @@ class SmartEmailingClient
 	 * @throws ConnectException
 	 * @throws ClientException
 	 */
-	private function patch($url, array $args = [])
+	private function patch(string $url, array $args = [])
 	{
 		return $this->request('PATCH', $url, $args);
 	}
@@ -219,7 +221,7 @@ class SmartEmailingClient
 	 * @throws ConnectException
 	 * @throws ClientException
 	 */
-	public function findContactsLists(...$select)
+	public function findContactsLists(string...$select)
 	{
 		$args = '';
 		if (count($select) > 0) {
@@ -237,7 +239,7 @@ class SmartEmailingClient
 	 * @throws ConnectException
 	 * @throws ClientException
 	 */
-	public function getContactList($id, ...$select)
+	public function getContactList(int $id, string...$select)
 	{
 		$args = '';
 		if (count($select) > 0) {
@@ -255,7 +257,7 @@ class SmartEmailingClient
 	 * @throws ConnectException
 	 * @throws ClientException
 	 */
-	public function createCustomField($name, $type)
+	public function createCustomField(string $name, string $type)
 	{
 		return $this->post('customfields', [
 			'name' => $name,
@@ -275,7 +277,7 @@ class SmartEmailingClient
 	 * @throws ConnectException
 	 * @throws ClientException
 	 */
-	public function findCustomFields(array $filter = [], array $select = [], array $sort = [], $limit = 500, $offset = 0)
+	public function findCustomFields(array $filter = [], array $select = [], array $sort = [], int $limit = 500, int $offset = 0)
 	{
 		$args = [
 			"limit=$limit",
@@ -308,7 +310,7 @@ class SmartEmailingClient
 	 * @throws ConnectException
 	 * @throws ClientException
 	 */
-	public function getCustomField($id, ...$select)
+	public function getCustomField(int $id, string...$select)
 	{
 		$args = '';
 		if (count($select) > 0) {
@@ -325,7 +327,7 @@ class SmartEmailingClient
 	 * @throws ConnectException
 	 * @throws ClientException
 	 */
-	public function deleteCustomField($id)
+	public function deleteCustomField(int $id): bool
 	{
 		return $this->delete('customfields/' . $id);
 	}
@@ -342,7 +344,7 @@ class SmartEmailingClient
 	 * @throws ConnectException
 	 * @throws ClientException
 	 */
-	public function findContactCustomField(array $filter = [], array $select = [], array $sort = [], $limit = 500, $offset = 0)
+	public function findContactCustomField(array $filter = [], array $select = [], array $sort = [], int $limit = 500, int $offset = 0)
 	{
 		$args = [
 			"limit=$limit",
@@ -377,7 +379,7 @@ class SmartEmailingClient
 	 * @throws ConnectException
 	 * @throws ClientException
 	 */
-	public function findContacts(array $filter = [], array $select = [], array $sort = [], $limit = 500, $offset = 0)
+	public function findContacts(array $filter = [], array $select = [], array $sort = [], int $limit = 500, int $offset = 0)
 	{
 		$args = [
 			"limit=$limit",
@@ -410,7 +412,7 @@ class SmartEmailingClient
 	 * @throws ConnectException
 	 * @throws ClientException
 	 */
-	public function getContact($id, array $select = [])
+	public function getContact(int $id, array $select = [])
 	{
 		$args = [
 			'expand=customfield_options'
@@ -436,7 +438,7 @@ class SmartEmailingClient
 	 * @throws ConnectException
 	 * @throws ClientException
 	 */
-	public function createCustomfieldOption($customfieldId, $order, $name)
+	public function createCustomfieldOption(int $customfieldId, int $order, string $name)
 	{
 		return $this->post('customfield-options', [
 			'customfield_id' => $customfieldId,
@@ -450,7 +452,7 @@ class SmartEmailingClient
 	 * @param int $id
 	 * @return bool
 	 */
-	public function deleteCustomfieldOption($id)
+	public function deleteCustomfieldOption(int $id)
 	{
 		return $this->delete('customfield-options/' . $id);
 	}
@@ -467,7 +469,7 @@ class SmartEmailingClient
 	 * @throws ConnectException
 	 * @throws ClientException
 	 */
-	public function findCustomFieldOptions(array $filter = [], array $select = [], array $sort = [], $limit = 500, $offset = 0)
+	public function findCustomFieldOptions(array $filter = [], array $select = [], array $sort = [], int $limit = 500, int $offset = 0)
 	{
 		$args = [
 			"limit=$limit",
@@ -499,7 +501,7 @@ class SmartEmailingClient
 	 * @throws ConnectException
 	 * @throws ClientException
 	 */
-	public function getCustomFieldOption($id, ...$select)
+	public function getCustomFieldOption(int $id, string...$select)
 	{
 		$args = '';
 		if (count($select) > 0) {
@@ -519,7 +521,7 @@ class SmartEmailingClient
 	 * @throws ConnectException
 	 * @throws ClientException
 	 */
-	public function updateCustomFieldOption($id, $customfieldId, $order, $name)
+	public function updateCustomFieldOption(int $id, int $customfieldId, int $order, string $name)
 	{
 		return $this->patch('customfield-options/' . $id, [
 			'customfield_id' => $customfieldId,
@@ -540,7 +542,7 @@ class SmartEmailingClient
 	 * @throws ConnectException
 	 * @throws ClientException
 	 */
-	public function createEmail($title, $html, $text = null, $template = false, $footerId = null)
+	public function createEmail(string $title, string $html, string $text = null, bool $template = false, int $footerId = null)
 	{
 		$data = [
 			'title' => $title,
@@ -567,7 +569,7 @@ class SmartEmailingClient
 	 * @throws ConnectException
 	 * @throws ClientException
 	 */
-	public function findEmails(array $select = [], array $sort = [], $limit = 500, $offset = 0)
+	public function findEmails(array $select = [], array $sort = [], int $limit = 500, int $offset = 0)
 	{
 		$args = [
 			"limit=$limit",
@@ -596,7 +598,7 @@ class SmartEmailingClient
 	 * @throws ConnectException
 	 * @throws ClientException
 	 */
-	public function getEmail($id, ...$select)
+	public function getEmail(int $id, string...$select)
 	{
 		$args = '';
 		if (count($select) > 0) {
@@ -614,7 +616,7 @@ class SmartEmailingClient
 	 * @throws ConnectException
 	 * @throws ClientException
 	 */
-	public function createWebhook($url, $event)
+	public function createWebhook(string $url, string $event)
 	{
 		return $this->post('web-hooks', [
 			'target_url' => $url,
@@ -630,7 +632,7 @@ class SmartEmailingClient
 	 * @throws ConnectException
 	 * @throws ClientException
 	 */
-	public function deleteWebhook($id)
+	public function deleteWebhook(int $id): bool
 	{
 		return $this->delete('web-hooks/' . $id);
 	}
@@ -643,7 +645,7 @@ class SmartEmailingClient
 	 * @throws ConnectException
 	 * @throws ClientException
 	 */
-	public function blacklisted($email)
+	public function blacklisted(string $email)
 	{
 		return $this->post('import', [
 			'data' => [
@@ -700,7 +702,7 @@ class SmartEmailingClient
 	 * @throws ConnectException
 	 * @throws ClientException
 	 */
-	public function send($senderName, $senderEmail, $recipientName, $recipientEmail, $subject, $content, array $attachments = [])
+	public function send(string $senderName, string $senderEmail, string $recipientName, string $recipientEmail, string $subject, string $content, array $attachments = [])
 	{
 		$email = [
 			'custom_id' => uniqid(),

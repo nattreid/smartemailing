@@ -18,14 +18,15 @@
     }
   ],
   "require": {
-    "php": ">= 5.6",
+    "php": ">= 7.0",
     "nette/di": "~2.4",
     "guzzlehttp/guzzle": "~6.2"
   },
   "require-dev": {
     "nette/tester": "~1.7",
     "nattreid/web-manager": "~1.0",
-    "nattreid/form": "~1.0"
+    "nattreid/form": "~1.0",
+    "tracy/tracy": "~2.4"
   },
   "autoload": {
     "classmap": [

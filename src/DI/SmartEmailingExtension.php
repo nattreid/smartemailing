@@ -5,7 +5,7 @@ declare(strict_types = 1);
 namespace NAttreid\SmartEmailing\DI;
 
 use NAttreid\Cms\Configurator\Configurator;
-use NAttreid\Cms\ExtensionTranslatorTrait;
+use NAttreid\Cms\DI\ExtensionTranslatorTrait;
 use NAttreid\SmartEmailing\Hooks\SmartEmailingHook;
 use NAttreid\SmartEmailing\SmartEmailingClient;
 use NAttreid\WebManager\Services\Hooks\HookService;

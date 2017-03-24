@@ -3,18 +3,12 @@
   "description": "SmartEmailing for Nette Framework",
   "type": "library",
   "license": [
-    "Unlicense"
+    "MIT"
   ],
   "authors": [
     {
       "name": "Attreid",
       "email": "attreid@gmail.com"
-    }
-  ],
-  "repositories": [
-    {
-      "type": "composer",
-      "url": "https://packages.newtravel.cz"
     }
   ],
   "require": {

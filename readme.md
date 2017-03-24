@@ -1,4 +1,4 @@
-# SmartEmailing pro Nette Framework
+# SmartEmailing API pro Nette Framework
 
 Nastavení v **config.neon**
 ```neon

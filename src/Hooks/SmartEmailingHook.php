@@ -1,17 +1,20 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace NAttreid\SmartEmailing\Hooks;
 
 use GuzzleHttp\Exception\ClientException;
 use IPub\FlashMessages\FlashNotifier;
 use NAttreid\Cms\Configurator\Configurator;
+use NAttreid\Cms\Factories\DataGridFactory;
 use NAttreid\Cms\Factories\FormFactory;
 use NAttreid\Form\Form;
 use NAttreid\SmartEmailing\CredentialsNotSetException;
 use NAttreid\SmartEmailing\SmartEmailingClient;
 use NAttreid\WebManager\Services\Hooks\HookFactory;
+use Nette\Application\UI\Control;
+use Nette\ComponentModel\Component;
 use Nette\InvalidArgumentException;
 use Nette\Utils\ArrayHash;
 
@@ -28,14 +31,14 @@ class SmartEmailingHook extends HookFactory
 	/** @var SmartEmailingClient */
 	private $smartEmailingClient;
 
-	public function __construct(FormFactory $formFactory, Configurator $configurator, FlashNotifier $flashNotifier, SmartEmailingClient $smartEmailingClient)
+	public function __construct(FormFactory $formFactory, DataGridFactory $gridFactory, Configurator $configurator, FlashNotifier $flashNotifier, SmartEmailingClient $smartEmailingClient)
 	{
-		parent::__construct($formFactory, $configurator, $flashNotifier);
+		parent::__construct($formFactory, $gridFactory, $configurator, $flashNotifier);
 		$this->smartEmailingClient = $smartEmailingClient;
 	}
 
-	/** @return Form */
-	public function create(): Form
+	/** @return Component */
+	public function create(): Component
 	{
 		$form = $this->formFactory->create();
 

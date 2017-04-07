@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace NAttreid\SmartEmailing\Hooks;
 
 use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\ConnectException;
 use IPub\FlashMessages\FlashNotifier;
 use NAttreid\Cms\Configurator\Configurator;
 use NAttreid\Cms\Factories\DataGridFactory;
@@ -13,7 +14,6 @@ use NAttreid\Form\Form;
 use NAttreid\SmartEmailing\CredentialsNotSetException;
 use NAttreid\SmartEmailing\SmartEmailingClient;
 use NAttreid\WebManager\Services\Hooks\HookFactory;
-use Nette\Application\UI\Control;
 use Nette\ComponentModel\Component;
 use Nette\InvalidArgumentException;
 use Nette\Utils\ArrayHash;
@@ -60,6 +60,7 @@ class SmartEmailingHook extends HookFactory
 		} catch (ClientException $ex) {
 		} catch (CredentialsNotSetException $ex) {
 		} catch (InvalidArgumentException $ex) {
+		} catch (ConnectException $ex) {
 		}
 
 		$form->addSubmit('save', 'form.save');

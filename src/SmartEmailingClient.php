@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace NAttreid\SmartEmailing;
 
@@ -60,16 +60,16 @@ class SmartEmailingClient
 	 * Set default ContactList for Contact
 	 * @param int|null $id
 	 */
-	public function setListId(int $id = null)
+	public function setListId(int $id = null): void
 	{
 		$this->listId = is_int($id) ? $id : null;
 	}
 
 	/**
 	 * @param ResponseInterface $response
-	 * @return mixed
+	 * @return stdClass|null
 	 */
-	private function getResponse(ResponseInterface $response)
+	private function getResponse(ResponseInterface $response): ?stdClass
 	{
 		$json = $response->getBody()->getContents();
 		if (!empty($json)) {
@@ -90,12 +90,12 @@ class SmartEmailingClient
 	 * @param string $method
 	 * @param string $url
 	 * @param array $args
-	 * @return bool|stdClass
+	 * @return stdClass|null
 	 * @throws CredentialsNotSetException
 	 * @throws ConnectException
 	 * @throws ClientException
 	 */
-	private function request(string $method, string $url, array $args = [])
+	private function request(string $method, string $url, array $args = []): ?stdClass
 	{
 		if (empty($this->username) || empty($this->apiKey)) {
 			throw new CredentialsNotSetException('Username and apiKey must be set');
@@ -120,7 +120,7 @@ class SmartEmailingClient
 				case 201:
 					return $this->getResponse($response);
 				case 204:
-					return true;
+					return new stdClass();
 			}
 		} catch (ClientException $ex) {
 			switch ($ex->getCode()) {
@@ -132,21 +132,21 @@ class SmartEmailingClient
 					if ($this->debug) {
 						throw $ex;
 					} else {
-						return false;
+						return null;
 					}
 			}
 		}
-		return false;
+		return null;
 	}
 
 	/**
 	 * @param string $url
-	 * @return bool|stdClass
+	 * @return stdClass|null
 	 * @throws CredentialsNotSetException
 	 * @throws ConnectException
 	 * @throws ClientException
 	 */
-	private function get(string $url)
+	private function get(string $url): ?stdClass
 	{
 		return $this->request('GET', $url);
 	}
@@ -154,12 +154,12 @@ class SmartEmailingClient
 	/**
 	 * @param string $url
 	 * @param string[] $args
-	 * @return bool|stdClass
+	 * @return stdClass|null
 	 * @throws CredentialsNotSetException
 	 * @throws ConnectException
 	 * @throws ClientException
 	 */
-	private function post(string $url, array $args = [])
+	private function post(string $url, array $args = []): ?stdClass
 	{
 		return $this->request('POST', $url, $args);
 	}
@@ -173,18 +173,18 @@ class SmartEmailingClient
 	 */
 	private function delete(string $url): bool
 	{
-		return $this->request('DELETE', $url);
+		return $this->request('DELETE', $url) !== null;
 	}
 
 	/**
 	 * @param string $url
 	 * @param string[] $args
-	 * @return bool|stdClass
+	 * @return stdClass|null
 	 * @throws CredentialsNotSetException
 	 * @throws ConnectException
 	 * @throws ClientException
 	 */
-	private function patch(string $url, array $args = [])
+	private function patch(string $url, array $args = []): ?stdClass
 	{
 		return $this->request('PATCH', $url, $args);
 	}
@@ -195,7 +195,7 @@ class SmartEmailingClient
 	 * @throws ConnectException
 	 * @throws ClientException
 	 */
-	public function ping()
+	public function ping(): stdClass
 	{
 		$response = $this->client->get('ping');
 		return $this->getResponse($response);
@@ -203,12 +203,12 @@ class SmartEmailingClient
 
 	/**
 	 * Login test
-	 * @return stdClass|false
+	 * @return stdClass|null
 	 * @throws CredentialsNotSetException
 	 * @throws ConnectException
 	 * @throws ClientException
 	 */
-	public function testLogin()
+	public function testLogin(): ?stdClass
 	{
 		return $this->post('check-credentials');
 	}
@@ -216,12 +216,12 @@ class SmartEmailingClient
 	/**
 	 * Get Contactlists
 	 * @param string[] $select Allowed values: "id", "name", "category", "publicname", "sendername", "senderemail", "replyto", "signature", "segment_id"
-	 * @return false|stdClass
+	 * @return stdClass|null
 	 * @throws CredentialsNotSetException
 	 * @throws ConnectException
 	 * @throws ClientException
 	 */
-	public function findContactsLists(string...$select)
+	public function findContactsLists(string...$select): ?stdClass
 	{
 		$args = '';
 		if (count($select) > 0) {
@@ -234,12 +234,12 @@ class SmartEmailingClient
 	 * Get single Contactlist
 	 * @param int $id
 	 * @param string[] $select Allowed values: "id", "name", "category", "publicname", "sendername", "senderemail", "replyto", "signature", "segment_id"
-	 * @return false|stdClass
+	 * @return stdClass|null
 	 * @throws CredentialsNotSetException
 	 * @throws ConnectException
 	 * @throws ClientException
 	 */
-	public function getContactList(int $id, string...$select)
+	public function getContactList(int $id, string...$select): ?stdClass
 	{
 		$args = '';
 		if (count($select) > 0) {
@@ -252,12 +252,12 @@ class SmartEmailingClient
 	 * Create new Customfield
 	 * @param string $name
 	 * @param string $type Allowed values: "text", "textarea", "date", "checkbox", "radio", "select"
-	 * @return bool|stdClass
+	 * @return stdClass|null
 	 * @throws CredentialsNotSetException
 	 * @throws ConnectException
 	 * @throws ClientException
 	 */
-	public function createCustomField(string $name, string $type)
+	public function createCustomField(string $name, string $type): ?stdClass
 	{
 		return $this->post('customfields', [
 			'name' => $name,
@@ -272,12 +272,12 @@ class SmartEmailingClient
 	 * @param string[] $sort Allowed values: "id", "name", "type". Prepend - to any key for desc direction, eg. '-id'
 	 * @param int $limit
 	 * @param int $offset
-	 * @return bool|stdClass
+	 * @return stdClass|null
 	 * @throws CredentialsNotSetException
 	 * @throws ConnectException
 	 * @throws ClientException
 	 */
-	public function findCustomFields(array $filter = [], array $select = [], array $sort = [], int $limit = 500, int $offset = 0)
+	public function findCustomFields(array $filter = [], array $select = [], array $sort = [], int $limit = 500, int $offset = 0): ?stdClass
 	{
 		$args = [
 			"limit=$limit",
@@ -305,12 +305,12 @@ class SmartEmailingClient
 	 * Get single Customfield
 	 * @param int $id
 	 * @param string[] $select Allowed values: "id", "name", "type"
-	 * @return bool|stdClass
+	 * @return stdClass|null
 	 * @throws CredentialsNotSetException
 	 * @throws ConnectException
 	 * @throws ClientException
 	 */
-	public function getCustomField(int $id, string...$select)
+	public function getCustomField(int $id, string...$select): ?stdClass
 	{
 		$args = '';
 		if (count($select) > 0) {
@@ -339,12 +339,12 @@ class SmartEmailingClient
 	 * @param string[] $sort Allowed values: "id", "contact_id", "customfield_id", "value", "customfield_options_id". Prepend - to any key for desc direction, eg. '-id'
 	 * @param int $limit
 	 * @param int $offset
-	 * @return bool|stdClass
+	 * @return stdClass|null
 	 * @throws CredentialsNotSetException
 	 * @throws ConnectException
 	 * @throws ClientException
 	 */
-	public function findContactCustomField(array $filter = [], array $select = [], array $sort = [], int $limit = 500, int $offset = 0)
+	public function findContactCustomField(array $filter = [], array $select = [], array $sort = [], int $limit = 500, int $offset = 0): ?stdClass
 	{
 		$args = [
 			"limit=$limit",
@@ -374,12 +374,12 @@ class SmartEmailingClient
 	 * @param string[] $sort Allowed values: "id", "language", "blacklisted", "emailaddress", "name", "surname", "titlesbefore", "titlesafter", "birthday", "nameday", "salution", "gender", "company", "street", "town", "country", "postalcode", "notes", "phone", "cellphone", "realname". Prepend - to any key for desc direction, eg. '-id'
 	 * @param int $limit
 	 * @param int $offset
-	 * @return bool|stdClass
+	 * @return stdClass|null
 	 * @throws CredentialsNotSetException
 	 * @throws ConnectException
 	 * @throws ClientException
 	 */
-	public function findContacts(array $filter = [], array $select = [], array $sort = [], int $limit = 500, int $offset = 0)
+	public function findContacts(array $filter = [], array $select = [], array $sort = [], int $limit = 500, int $offset = 0): ?stdClass
 	{
 		$args = [
 			"limit=$limit",
@@ -407,12 +407,12 @@ class SmartEmailingClient
 	 * Get single Contact
 	 * @param int $id
 	 * @param string[] $select Allowed values: "id", "language", "blacklisted", "emailaddress", "name", "surname", "titlesbefore", "titlesafter", "birthday", "nameday", "salution", "gender", "company", "street", "town", "country", "postalcode", "notes", "phone", "cellphone", "realname"
-	 * @return bool|stdClass
+	 * @return stdClass|null
 	 * @throws CredentialsNotSetException
 	 * @throws ConnectException
 	 * @throws ClientException
 	 */
-	public function getContact(int $id, array $select = [])
+	public function getContact(int $id, array $select = []): ?stdClass
 	{
 		$args = [
 			'expand=customfield_options'
@@ -433,12 +433,12 @@ class SmartEmailingClient
 	 * @param int $customfieldId
 	 * @param int $order Order of option as displayed in web forms and Contact detail. Lower number will be displayed higher in the list.
 	 * @param string $name
-	 * @return bool|stdClass
+	 * @return stdClass|null
 	 * @throws CredentialsNotSetException
 	 * @throws ConnectException
 	 * @throws ClientException
 	 */
-	public function createCustomfieldOption(int $customfieldId, int $order, string $name)
+	public function createCustomfieldOption(int $customfieldId, int $order, string $name): ?stdClass
 	{
 		return $this->post('customfield-options', [
 			'customfield_id' => $customfieldId,
@@ -452,7 +452,7 @@ class SmartEmailingClient
 	 * @param int $id
 	 * @return bool
 	 */
-	public function deleteCustomfieldOption(int $id)
+	public function deleteCustomfieldOption(int $id): bool
 	{
 		return $this->delete('customfield-options/' . $id);
 	}
@@ -464,12 +464,12 @@ class SmartEmailingClient
 	 * @param string[] $sort Allowed values: "id", "customfield_id", "name", "order". Prepend - to any key for desc direction, eg. '-id'
 	 * @param int $limit
 	 * @param int $offset
-	 * @return bool|stdClass
+	 * @return stdClass|null
 	 * @throws CredentialsNotSetException
 	 * @throws ConnectException
 	 * @throws ClientException
 	 */
-	public function findCustomFieldOptions(array $filter = [], array $select = [], array $sort = [], int $limit = 500, int $offset = 0)
+	public function findCustomFieldOptions(array $filter = [], array $select = [], array $sort = [], int $limit = 500, int $offset = 0): ?stdClass
 	{
 		$args = [
 			"limit=$limit",
@@ -496,12 +496,12 @@ class SmartEmailingClient
 	 * Get single Customfield option
 	 * @param int $id
 	 * @param string[] $select Allowed values: "id", "customfield_id", "name", "order"
-	 * @return bool|stdClass
+	 * @return stdClass|null
 	 * @throws CredentialsNotSetException
 	 * @throws ConnectException
 	 * @throws ClientException
 	 */
-	public function getCustomFieldOption(int $id, string...$select)
+	public function getCustomFieldOption(int $id, string...$select): ?stdClass
 	{
 		$args = '';
 		if (count($select) > 0) {
@@ -516,12 +516,12 @@ class SmartEmailingClient
 	 * @param int $customfieldId
 	 * @param int $order Order of option as displayed in web forms and Contact detail. Lower number will be displayed higher in the list.
 	 * @param string $name
-	 * @return bool|stdClass
+	 * @return stdClass|null
 	 * @throws CredentialsNotSetException
 	 * @throws ConnectException
 	 * @throws ClientException
 	 */
-	public function updateCustomFieldOption(int $id, int $customfieldId, int $order, string $name)
+	public function updateCustomFieldOption(int $id, int $customfieldId, int $order, string $name): ?stdClass
 	{
 		return $this->patch('customfield-options/' . $id, [
 			'customfield_id' => $customfieldId,
@@ -537,12 +537,12 @@ class SmartEmailingClient
 	 * @param string $text
 	 * @param bool $template
 	 * @param int $footerId
-	 * @return bool|stdClass
+	 * @return stdClass|null
 	 * @throws CredentialsNotSetException
 	 * @throws ConnectException
 	 * @throws ClientException
 	 */
-	public function createEmail(string $title, string $html, string $text = null, bool $template = false, int $footerId = null)
+	public function createEmail(string $title, string $html, string $text = null, bool $template = false, int $footerId = null): ?stdClass
 	{
 		$data = [
 			'title' => $title,
@@ -564,12 +564,12 @@ class SmartEmailingClient
 	 * @param string[] $sort Allowed values: "id", "name", "title". Prepend - to any key for desc direction, eg. '-id'
 	 * @param int $limit
 	 * @param int $offset
-	 * @return bool|stdClass
+	 * @return stdClass|null
 	 * @throws CredentialsNotSetException
 	 * @throws ConnectException
 	 * @throws ClientException
 	 */
-	public function findEmails(array $select = [], array $sort = [], int $limit = 500, int $offset = 0)
+	public function findEmails(array $select = [], array $sort = [], int $limit = 500, int $offset = 0): ?stdClass
 	{
 		$args = [
 			"limit=$limit",
@@ -593,12 +593,12 @@ class SmartEmailingClient
 	 * Get single E-mail
 	 * @param int $id
 	 * @param string[] $select Allowed values: "id", "name", "title", "htmlbody", "textbody", "created"
-	 * @return bool|stdClass
+	 * @return stdClass|null
 	 * @throws CredentialsNotSetException
 	 * @throws ConnectException
 	 * @throws ClientException
 	 */
-	public function getEmail(int $id, string...$select)
+	public function getEmail(int $id, string...$select): ?stdClass
 	{
 		$args = '';
 		if (count($select) > 0) {
@@ -611,12 +611,12 @@ class SmartEmailingClient
 	 * Create new Webhook
 	 * @param string $url
 	 * @param string $event Allowed values: "new_contact,updated_contact,unsubscribed_contact"
-	 * @return bool|stdClass
+	 * @return stdClass|null
 	 * @throws CredentialsNotSetException
 	 * @throws ConnectException
 	 * @throws ClientException
 	 */
-	public function createWebhook(string $url, string $event)
+	public function createWebhook(string $url, string $event): ?stdClass
 	{
 		return $this->post('web-hooks', [
 			'target_url' => $url,
@@ -640,12 +640,12 @@ class SmartEmailingClient
 	/**
 	 * Blacklist email
 	 * @param string $email
-	 * @return bool|stdClass
+	 * @return stdClass|null
 	 * @throws CredentialsNotSetException
 	 * @throws ConnectException
 	 * @throws ClientException
 	 */
-	public function blacklisted(string $email)
+	public function blacklisted(string $email): ?stdClass
 	{
 		return $this->post('import', [
 			'data' => [
@@ -660,12 +660,12 @@ class SmartEmailingClient
 	/**
 	 * Add contact
 	 * @param Contact $contact
-	 * @return bool|stdClass
+	 * @return stdClass|null
 	 * @throws CredentialsNotSetException
 	 * @throws ConnectException
 	 * @throws ClientException
 	 */
-	public function addContact(Contact $contact)
+	public function addContact(Contact $contact): ?stdClass
 	{
 		if ($contact->emailaddress === null) {
 			throw new InvalidArgumentException("'emailaddress' must be set.");
@@ -697,12 +697,12 @@ class SmartEmailingClient
 	 * @param string $subject
 	 * @param string $content
 	 * @param string[] $attachments
-	 * @return bool|stdClass
+	 * @return stdClass|null
 	 * @throws CredentialsNotSetException
 	 * @throws ConnectException
 	 * @throws ClientException
 	 */
-	public function send(string $senderName, string $senderEmail, string $recipientName, string $recipientEmail, string $subject, string $content, array $attachments = [])
+	public function send(string $senderName, string $senderEmail, string $recipientName, string $recipientEmail, string $subject, string $content, array $attachments = []): ?stdClass
 	{
 		$email = [
 			'custom_id' => uniqid(),

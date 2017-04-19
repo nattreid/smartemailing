@@ -70,7 +70,7 @@ class SmartEmailingHook extends HookFactory
 		return $form;
 	}
 
-	public function smartemailingFormSucceeded(Form $form, ArrayHash $values)
+	public function smartemailingFormSucceeded(Form $form, ArrayHash $values): void
 	{
 		$this->configurator->smartemailingUsername = $values->username;
 		$this->configurator->smartemailingApiKey = $values->apiKey;

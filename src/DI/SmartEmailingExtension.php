@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace NAttreid\SmartEmailing\DI;
 
@@ -29,7 +29,7 @@ class SmartEmailingExtension extends CompilerExtension
 		'debug' => false
 	];
 
-	public function loadConfiguration()
+	public function loadConfiguration(): void
 	{
 		$builder = $this->getContainerBuilder();
 		$config = $this->validateConfig($this->defaults, $this->getConfig());

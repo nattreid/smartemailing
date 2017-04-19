@@ -57,10 +57,7 @@ class SmartEmailingHook extends HookFactory
 
 			$select->setDefaultValue($this->configurator->smartemailingListId);
 
-		} catch (ClientException $ex) {
-		} catch (CredentialsNotSetException $ex) {
-		} catch (InvalidArgumentException $ex) {
-		} catch (ConnectException $ex) {
+		} catch (ClientException | CredentialsNotSetException | InvalidArgumentException | ConnectException $ex) {
 		}
 
 		$form->addSubmit('save', 'form.save');

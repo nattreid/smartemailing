@@ -72,8 +72,8 @@ class SmartEmailingHook extends HookFactory
 
 		$this->configurator->smartEmailing = $config;
 
-		$this->onDataChange();
-
 		$this->flashNotifier->success('default.dataSaved');
+
+		$this->onDataChange();
 	}
 }

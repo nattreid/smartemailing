@@ -28,32 +28,32 @@ class SmartEmailingConfig
 	/** @var int */
 	private $listId;
 
-	public function getUsername(): ?string
+	protected function getUsername(): ?string
 	{
 		return $this->username;
 	}
 
-	public function setUsername(?string $username)
+	protected function setUsername(?string $username)
 	{
 		$this->username = $username;
 	}
 
-	public function getApiKey(): ?string
+	protected function getApiKey(): ?string
 	{
 		return $this->apiKey;
 	}
 
-	public function setApiKey(?string $apiKey)
+	protected function setApiKey(?string $apiKey)
 	{
 		$this->apiKey = $apiKey;
 	}
 
-	public function getListId(): ?int
+	protected function getListId(): ?int
 	{
 		return $this->listId;
 	}
 
-	public function setListId(?int $listId)
+	protected function setListId(?int $listId)
 	{
 		$this->listId = $listId;
 	}

@@ -6,16 +6,12 @@ namespace NAttreid\SmartEmailing\Hooks;
 
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\ConnectException;
-use IPub\FlashMessages\FlashNotifier;
-use NAttreid\Cms\Configurator\Configurator;
-use NAttreid\Cms\Factories\DataGridFactory;
-use NAttreid\Cms\Factories\FormFactory;
 use NAttreid\Form\Form;
 use NAttreid\SmartEmailing\CredentialsNotSetException;
 use NAttreid\SmartEmailing\SmartEmailingClient;
 use NAttreid\WebManager\Services\Hooks\HookFactory;
 use Nette\ComponentModel\Component;
-use Nette\InvalidArgumentException;
+use Nette\InvalidStateException;
 use Nette\Utils\ArrayHash;
 
 /**
@@ -28,13 +24,11 @@ class SmartEmailingHook extends HookFactory
 	/** @var IConfigurator */
 	protected $configurator;
 
-	/** @var SmartEmailingClient */
-	private $smartEmailingClient;
-
-	public function __construct(FormFactory $formFactory, DataGridFactory $gridFactory, Configurator $configurator, FlashNotifier $flashNotifier, SmartEmailingClient $smartEmailingClient)
+	public function init(): void
 	{
-		parent::__construct($formFactory, $gridFactory, $configurator, $flashNotifier);
-		$this->smartEmailingClient = $smartEmailingClient;
+		if (!$this->configurator->smartEmailing) {
+			$this->configurator->smartEmailing = new SmartEmailingConfig;
+		}
 	}
 
 	/** @return Component */
@@ -43,21 +37,22 @@ class SmartEmailingHook extends HookFactory
 		$form = $this->formFactory->create();
 
 		$form->addText('username', 'webManager.web.hooks.smartEmailing.username')
-			->setDefaultValue($this->configurator->smartemailingUsername);
+			->setDefaultValue($this->configurator->smartEmailing->username);
 		$form->addText('apiKey', 'webManager.web.hooks.smartEmailing.apiKey')
-			->setDefaultValue($this->configurator->smartemailingApiKey);
+			->setDefaultValue($this->configurator->smartEmailing->apiKey);
 
 		try {
-			$data = $this->smartEmailingClient->findContactsLists()->data;
+			$smartEmailingClient = new SmartEmailingClient(false, $this->configurator->smartEmailing);
+			$data = $smartEmailingClient->findContactsLists()->data;
 			$items = [];
 			foreach ($data as $row) {
 				$items[$row->id] = $row->name;
 			}
 			$select = $form->addSelectUntranslated('list', 'webManager.web.hooks.smartEmailing.list', $items, 'form.none');
 
-			$select->setDefaultValue($this->configurator->smartemailingListId);
+			$select->setDefaultValue($this->configurator->smartEmailing->listId);
 
-		} catch (ClientException | CredentialsNotSetException | InvalidArgumentException | ConnectException $ex) {
+		} catch (ClientException | CredentialsNotSetException | InvalidStateException | ConnectException $ex) {
 		}
 
 		$form->addSubmit('save', 'form.save');
@@ -69,9 +64,15 @@ class SmartEmailingHook extends HookFactory
 
 	public function smartemailingFormSucceeded(Form $form, ArrayHash $values): void
 	{
-		$this->configurator->smartemailingUsername = $values->username;
-		$this->configurator->smartemailingApiKey = $values->apiKey;
-		$this->configurator->smartemailingListId = $values->list;
+		$config = $this->configurator->smartEmailing;
+
+		$config->username = $values->username ?: null;
+		$config->apiKey = $values->apiKey ?: null;
+		$config->listId = empty($values->list) ? null : $values->list;
+
+		$this->configurator->smartEmailing = $config;
+
+		$this->onDataChange();
 
 		$this->flashNotifier->success('default.dataSaved');
 	}

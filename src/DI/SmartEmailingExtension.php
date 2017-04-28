@@ -6,12 +6,12 @@ namespace NAttreid\SmartEmailing\DI;
 
 use NAttreid\Cms\Configurator\Configurator;
 use NAttreid\Cms\DI\ExtensionTranslatorTrait;
+use NAttreid\SmartEmailing\Hooks\SmartEmailingConfig;
 use NAttreid\SmartEmailing\Hooks\SmartEmailingHook;
 use NAttreid\SmartEmailing\SmartEmailingClient;
 use NAttreid\WebManager\Services\Hooks\HookService;
 use Nette\DI\CompilerExtension;
 use Nette\DI\Statement;
-use Nette\InvalidStateException;
 
 /**
  * Class SmartEmailingExtension
@@ -43,24 +43,16 @@ class SmartEmailingExtension extends CompilerExtension
 				'webManager'
 			]);
 
-			$config['username'] = new Statement('?->smartemailingUsername', ['@' . Configurator::class]);
-			$config['apiKey'] = new Statement('?->smartemailingApiKey', ['@' . Configurator::class]);
-			$config['listId'] = new Statement('?->smartemailingListId', ['@' . Configurator::class]);
+			$smartEmailing = new Statement('?->smartEmailing \?: new ' . SmartEmailingConfig::class, ['@' . Configurator::class]);
+		} else {
+			$smartEmailing = new SmartEmailingConfig;
+			$smartEmailing->username = $config['username'];
+			$smartEmailing->apiKey = $config['apiKey'];
+			$smartEmailing->listId = $config['listId'];
 		}
 
-		if ($config['username'] === null) {
-			throw new InvalidStateException("SmartEmailing: 'username' does not set in config.neon");
-		}
-		if ($config['apiKey'] === null) {
-			throw new InvalidStateException("SmartEmailing: 'apiKey' does not set in config.neon");
-		}
-
-		$client = $builder->addDefinition($this->prefix('client'))
+		$builder->addDefinition($this->prefix('client'))
 			->setClass(SmartEmailingClient::class)
-			->setArguments([$config['debug'], $config['username'], $config['apiKey']]);
-
-		if ($config['listId'] !== null) {
-			$client->addSetup('setListId', [$config['listId']]);
-		}
+			->setArguments([$config['debug'], $smartEmailing]);
 	}
 }

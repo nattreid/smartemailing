@@ -10,6 +10,8 @@ use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\RequestOptions;
 use InvalidArgumentException;
 use NAttreid\SmartEmailing\Helper\Contact;
+use NAttreid\SmartEmailing\Hooks\SmartEmailingConfig;
+use Nette\InvalidStateException;
 use Nette\SmartObject;
 use Nette\Utils\Json;
 use Nette\Utils\Strings;
@@ -31,38 +33,23 @@ class SmartEmailingClient
 	/** @var string */
 	private $uri = 'https://app.smartemailing.cz/api/v3/';
 
-	/** @var string */
-	private $username;
-
-	/** @var string */
-	private $apiKey;
-
-	/** @var int */
-	private $listId;
+	/** @var SmartEmailingConfig */
+	private $config;
 
 	/** @var bool */
 	private $debug;
 
-	/**
-	 * Client constructor.
-	 * @param bool $debug
-	 * @param string $username
-	 * @param string $apiKey
-	 */
-	public function __construct(bool $debug, string $username, string $apiKey)
+	public function __construct(bool $debug, SmartEmailingConfig $config)
 	{
-		$this->username = $username;
-		$this->apiKey = $apiKey;
+		$this->config = $config;
 		$this->debug = $debug;
-	}
 
-	/**
-	 * Set default ContactList for Contact
-	 * @param int|null $id
-	 */
-	public function setListId(int $id = null): void
-	{
-		$this->listId = is_int($id) ? $id : null;
+		if ($config->username === null) {
+			throw new InvalidStateException("SmartEmailing: 'username' does not set");
+		}
+		if ($config->apiKey === null) {
+			throw new InvalidStateException("SmartEmailing: 'apiKey' does not set");
+		}
 	}
 
 	/**
@@ -97,15 +84,15 @@ class SmartEmailingClient
 	 */
 	private function request(string $method, string $url, array $args = []): ?stdClass
 	{
-		if (empty($this->username) || empty($this->apiKey)) {
+		if (empty($this->config->username) || empty($this->config->apiKey)) {
 			throw new CredentialsNotSetException('Username and apiKey must be set');
 		}
 
 		try {
 			$options = [
 				RequestOptions::AUTH => [
-					$this->username,
-					$this->apiKey
+					$this->config->username,
+					$this->config->apiKey
 				]
 			];
 
@@ -674,10 +661,10 @@ class SmartEmailingClient
 
 		$data['blacklisted'] = 0;
 
-		if ($this->listId !== null) {
+		if ($this->config->listId !== null) {
 			$data['contactlists'] = [
 				[
-					'id' => $this->listId,
+					'id' => $this->config->listId,
 					'status' => 'confirmed'
 				]
 			];

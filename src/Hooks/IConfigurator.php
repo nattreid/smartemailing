@@ -7,9 +7,7 @@ namespace NAttreid\SmartEmailing\Hooks;
 /**
  * Interface IConfigurator
  *
- * @property string $smartemailingUsername
- * @property string $smartemailingApiKey
- * @property int $smartemailingListId
+ * @property SmartEmailingConfig $smartEmailing
  *
  * @author Attreid <attreid@gmail.com>
  */

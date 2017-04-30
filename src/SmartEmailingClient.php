@@ -43,13 +43,6 @@ class SmartEmailingClient
 	{
 		$this->config = $config;
 		$this->debug = $debug;
-
-		if ($config->username === null) {
-			throw new InvalidStateException("SmartEmailing: 'username' does not set");
-		}
-		if ($config->apiKey === null) {
-			throw new InvalidStateException("SmartEmailing: 'apiKey' does not set");
-		}
 	}
 
 	/**

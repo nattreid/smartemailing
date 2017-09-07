@@ -14,6 +14,7 @@ use Nette\ComponentModel\Component;
 use Nette\InvalidArgumentException;
 use Nette\InvalidStateException;
 use Nette\Utils\ArrayHash;
+use Tracy\Debugger;
 
 /**
  * Class SmartEmailingHook
@@ -57,6 +58,7 @@ class SmartEmailingHook extends HookFactory
 
 			}
 		} catch (ClientException | CredentialsNotSetException | InvalidStateException | ConnectException $ex) {
+			Debugger::log($ex, Debugger::EXCEPTION);
 		}
 
 		$form->addSubmit('save', 'form.save');

@@ -11,6 +11,7 @@ use NAttreid\SmartEmailing\CredentialsNotSetException;
 use NAttreid\SmartEmailing\SmartEmailingClient;
 use NAttreid\WebManager\Services\Hooks\HookFactory;
 use Nette\ComponentModel\Component;
+use Nette\InvalidArgumentException;
 use Nette\InvalidStateException;
 use Nette\Utils\ArrayHash;
 
@@ -50,8 +51,11 @@ class SmartEmailingHook extends HookFactory
 			}
 			$select = $form->addSelectUntranslated('list', 'webManager.web.hooks.smartEmailing.list', $items, 'form.none');
 
-			$select->setDefaultValue($this->configurator->smartEmailing->listId);
+			try {
+				$select->setDefaultValue($this->configurator->smartEmailing->listId);
+			} catch (InvalidArgumentException $ex) {
 
+			}
 		} catch (ClientException | CredentialsNotSetException | InvalidStateException | ConnectException $ex) {
 		}
 

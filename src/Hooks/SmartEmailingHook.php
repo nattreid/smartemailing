@@ -57,7 +57,8 @@ class SmartEmailingHook extends HookFactory
 			} catch (InvalidArgumentException $ex) {
 
 			}
-		} catch (ClientException | CredentialsNotSetException | InvalidStateException | ConnectException $ex) {
+		} catch (CredentialsNotSetException $ex) {
+		} catch (ClientException| InvalidStateException | ConnectException $ex) {
 			Debugger::log($ex, Debugger::EXCEPTION);
 		}
 

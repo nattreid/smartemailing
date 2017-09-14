@@ -37,7 +37,7 @@ class SmartEmailingExtension extends CompilerExtension
 		$hook = $builder->getByType(HookService::class);
 		if ($hook) {
 			$builder->addDefinition($this->prefix('smartEmailingHook'))
-				->setClass(SmartEmailingHook::class);
+				->setType(SmartEmailingHook::class);
 
 			$this->setTranslation(__DIR__ . '/../lang/', [
 				'webManager'
@@ -52,7 +52,7 @@ class SmartEmailingExtension extends CompilerExtension
 		}
 
 		$builder->addDefinition($this->prefix('client'))
-			->setClass(SmartEmailingClient::class)
+			->setType(SmartEmailingClient::class)
 			->setArguments([$config['debug'], $smartEmailing]);
 	}
 }

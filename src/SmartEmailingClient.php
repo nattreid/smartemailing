@@ -11,7 +11,6 @@ use GuzzleHttp\RequestOptions;
 use InvalidArgumentException;
 use NAttreid\SmartEmailing\Helper\Contact;
 use NAttreid\SmartEmailing\Hooks\SmartEmailingConfig;
-use Nette\InvalidStateException;
 use Nette\SmartObject;
 use Nette\Utils\Json;
 use Nette\Utils\Strings;

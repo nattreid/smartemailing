@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace NAttreid\SmartEmailing;
 
 use Exception;
+use Throwable;
 
 /**
  * Class ClientException
@@ -14,4 +15,8 @@ use Exception;
 class SmartEmailingClientException extends Exception
 {
 
+	public function __construct(Throwable $previous = null)
+	{
+		parent::__construct('', 0, $previous);
+	}
 }

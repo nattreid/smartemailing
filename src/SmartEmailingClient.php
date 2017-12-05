@@ -12,6 +12,7 @@ use NAttreid\SmartEmailing\Helper\Contact;
 use NAttreid\SmartEmailing\Hooks\SmartEmailingConfig;
 use Nette\SmartObject;
 use Nette\Utils\Json;
+use Nette\Utils\JsonException;
 use Nette\Utils\Strings;
 use Psr\Http\Message\ResponseInterface;
 use stdClass;
@@ -46,6 +47,7 @@ class SmartEmailingClient
 	/**
 	 * @param ResponseInterface $response
 	 * @return stdClass|null
+	 * @throws JsonException
 	 */
 	private function getResponse(ResponseInterface $response): ?stdClass
 	{
@@ -168,7 +170,7 @@ class SmartEmailingClient
 	/**
 	 * Aliveness test
 	 * @return stdClass
-	 * @throws SmartEmailingClientException
+	 * @throws JsonException
 	 */
 	public function ping(): stdClass
 	{
@@ -415,6 +417,8 @@ class SmartEmailingClient
 	 * Delete Customfield option
 	 * @param int $id
 	 * @return bool
+	 * @throws CredentialsNotSetException
+	 * @throws SmartEmailingClientException
 	 */
 	public function deleteCustomfieldOption(int $id): bool
 	{

@@ -5,54 +5,36 @@ declare(strict_types=1);
 namespace NAttreid\SmartEmailing\DI;
 
 use NAttreid\Cms\Configurator\Configurator;
-use NAttreid\Cms\DI\ExtensionTranslatorTrait;
 use NAttreid\SmartEmailing\Hooks\SmartEmailingConfig;
 use NAttreid\SmartEmailing\Hooks\SmartEmailingHook;
-use NAttreid\SmartEmailing\SmartEmailingClient;
 use NAttreid\WebManager\Services\Hooks\HookService;
-use Nette\DI\CompilerExtension;
 use Nette\DI\Statement;
 
-/**
- * Class SmartEmailingExtension
- *
- * @author Attreid <attreid@gmail.com>
- */
-class SmartEmailingExtension extends CompilerExtension
-{
-	use ExtensionTranslatorTrait;
-
-	private $defaults = [
-		'username' => null,
-		'apiKey' => null,
-		'listId' => null,
-		'debug' => false
-	];
-
-	public function loadConfiguration(): void
+if (trait_exists('NAttreid\Cms\DI\ExtensionTranslatorTrait')) {
+	class SmartEmailingExtension extends AbstractSmartEmailingExtension
 	{
-		$builder = $this->getContainerBuilder();
-		$config = $this->validateConfig($this->defaults, $this->getConfig());
+		use ExtensionTranslatorTrait;
 
-		$hook = $builder->getByType(HookService::class);
-		if ($hook) {
-			$builder->addDefinition($this->prefix('smartEmailingHook'))
-				->setType(SmartEmailingHook::class);
+		protected function prepareHook(array $config)
+		{
+			$builder = $this->getContainerBuilder();
+			$hook = $builder->getByType(HookService::class);
+			if ($hook) {
+				$builder->addDefinition($this->prefix('smartEmailingHook'))
+					->setType(SmartEmailingHook::class);
 
-			$this->setTranslation(__DIR__ . '/../lang/', [
-				'webManager'
-			]);
+				$this->setTranslation(__DIR__ . '/../lang/', [
+					'webManager'
+				]);
 
-			$smartEmailing = new Statement('?->smartEmailing \?: new ' . SmartEmailingConfig::class, ['@' . Configurator::class]);
-		} else {
-			$smartEmailing = new SmartEmailingConfig;
-			$smartEmailing->username = $config['username'];
-			$smartEmailing->apiKey = $config['apiKey'];
-			$smartEmailing->listId = $config['listId'];
+				return new Statement('?->smartEmailing \?: new ' . SmartEmailingConfig::class, ['@' . Configurator::class]);
+			} else {
+				return parent::prepareHook($config);
+			}
 		}
-
-		$builder->addDefinition($this->prefix('client'))
-			->setType(SmartEmailingClient::class)
-			->setArguments([$config['debug'], $smartEmailing]);
+	}
+} else {
+	class SmartEmailingExtension extends AbstractSmartEmailingExtension
+	{
 	}
 }

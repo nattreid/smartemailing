@@ -3,7 +3,7 @@
 Nastavení v **config.neon**
 ```neon
 extensions:
-    smartEmailing: NAtrreid\SmartEmailing\DI\SmartEmailingExtension
+    smartEmailing: NAttreid\SmartEmailing\DI\SmartEmailingExtension
 
 smartEmailing:
     username: 'username@mail.com'

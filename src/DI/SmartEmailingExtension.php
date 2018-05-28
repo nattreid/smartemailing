@@ -16,7 +16,7 @@ if (trait_exists('NAttreid\Cms\DI\ExtensionTranslatorTrait')) {
 	{
 		use ExtensionTranslatorTrait;
 
-		protected function prepareHook(array $config)
+		protected function prepareConfig(array $config)
 		{
 			$builder = $this->getContainerBuilder();
 			$hook = $builder->getByType(HookService::class);
@@ -30,7 +30,7 @@ if (trait_exists('NAttreid\Cms\DI\ExtensionTranslatorTrait')) {
 
 				return new Statement('?->smartEmailing \?: new ' . SmartEmailingConfig::class, ['@' . Configurator::class]);
 			} else {
-				return parent::prepareHook($config);
+				return parent::prepareConfig($config);
 			}
 		}
 	}

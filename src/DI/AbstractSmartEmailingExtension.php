@@ -27,19 +27,20 @@ abstract class AbstractSmartEmailingExtension extends CompilerExtension
 		$builder = $this->getContainerBuilder();
 		$config = $this->validateConfig($this->defaults, $this->getConfig());
 
-		$smartEmailing = $this->prepareHook($config);
+		$smartEmailing = $this->prepareConfig($config);
 
 		$builder->addDefinition($this->prefix('client'))
 			->setType(SmartEmailingClient::class)
 			->setArguments([$config['debug'], $smartEmailing]);
 	}
 
-	protected function prepareHook(array $config)
+	protected function prepareConfig(array $config)
 	{
-		$smartEmailing = new SmartEmailingConfig;
-		$smartEmailing->username = $config['username'];
-		$smartEmailing->apiKey = $config['apiKey'];
-		$smartEmailing->listId = $config['listId'];
-		return $smartEmailing;
+		$builder = $this->getContainerBuilder();
+		return $builder->addDefinition($this->prefix('config'))
+			->setFactory(SmartEmailingConfig::class)
+			->addSetup('$username', [$config['username']])
+			->addSetup('$apiKey', [$config['apiKey']])
+			->addSetup('$listId', [$config['listId']]);
 	}
 }

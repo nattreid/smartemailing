@@ -9,9 +9,9 @@ use Nette\SmartObject;
 /**
  * Class SmartEmailingConfig
  *
- * @property string $username
- * @property string $apiKey
- * @property int $listId
+ * @property string|null $username
+ * @property string|null $apiKey
+ * @property int|null $listId
  *
  * @author Attreid <attreid@gmail.com>
  */
@@ -19,13 +19,13 @@ class SmartEmailingConfig
 {
 	use SmartObject;
 
-	/** @var string */
+	/** @var string|null */
 	private $username;
 
-	/** @var string */
+	/** @var string|null */
 	private $apiKey;
 
-	/** @var int */
+	/** @var int|null */
 	private $listId;
 
 	protected function getUsername(): ?string

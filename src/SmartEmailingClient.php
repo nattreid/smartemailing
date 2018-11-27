@@ -74,7 +74,7 @@ class SmartEmailingClient
 	 * @throws CredentialsNotSetException
 	 * @throws SmartEmailingClientException
 	 */
-	private function request(string $method, string $url, array $args = []): ?stdClass
+	public function request(string $method, string $url, array $args = []): ?stdClass
 	{
 		if (empty($this->config->username) || empty($this->config->apiKey)) {
 			throw new CredentialsNotSetException('Username and apiKey must be set');

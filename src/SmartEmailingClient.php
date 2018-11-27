@@ -74,7 +74,7 @@ class SmartEmailingClient
 	 * @throws CredentialsNotSetException
 	 * @throws SmartEmailingClientException
 	 */
-	public function request(string $method, string $url, array $args = []): ?stdClass
+	private function request(string $method, string $url, array $args = []): ?stdClass
 	{
 		if (empty($this->config->username) || empty($this->config->apiKey)) {
 			throw new CredentialsNotSetException('Username and apiKey must be set');
@@ -687,5 +687,26 @@ class SmartEmailingClient
 				$email
 			]
 		]);
+	}
+
+    /**
+     * @return null|stdClass
+     * @throws CredentialsNotSetException
+     * @throws SmartEmailingClientException
+     */
+    public function findWebForms()
+    {
+        return $this->get("web-forms");
+	}
+
+    /**
+     * @param int $id
+     * @return null|stdClass
+     * @throws CredentialsNotSetException
+     * @throws SmartEmailingClientException
+     */
+    public function findWebFormById(int $id)
+    {
+        return $this->get("/api/v3/web-form-structure/$id");
 	}
 }

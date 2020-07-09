@@ -168,6 +168,16 @@ class SmartEmailingClient
 	}
 
 	/**
+	 * @param int $listId
+	 * @return static
+	 */
+	public function setListId(int $listId): self
+	{
+		$this->config->listId = $listId;
+		return $this;
+	}
+
+	/**
 	 * Aliveness test
 	 * @return stdClass
 	 * @throws JsonException

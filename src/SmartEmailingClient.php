@@ -698,4 +698,25 @@ class SmartEmailingClient
 			]
 		]);
 	}
+
+    /**
+     * @return null|stdClass
+     * @throws CredentialsNotSetException
+     * @throws SmartEmailingClientException
+     */
+    public function findWebForms()
+    {
+        return $this->get("web-forms");
+	}
+
+    /**
+     * @param int $id
+     * @return null|stdClass
+     * @throws CredentialsNotSetException
+     * @throws SmartEmailingClientException
+     */
+    public function findWebFormById(int $id)
+    {
+        return $this->get("/api/v3/web-form-structure/$id");
+	}
 }
